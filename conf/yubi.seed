@@ -1,0 +1,16 @@
+mysql-server-5.5        mysql-server/root_password_again    password  unsecured
+mysql-server-5.5        mysql-server/root_password          password  unsecured
+yubikey-ksm             yubikey-ksm/db/dbname               string    ykksm
+yubikey-ksm             yubikey-ksm/db/app-user             string    ykksmreader
+yubikey-ksm             yubikey-ksm/database-type           select    mysql
+yubikey-ksm             yubikey-ksm/mysql/admin-pass        password  unsecured
+yubikey-ksm             yubikey-ksm/mysql/app-pass          password  unsecured
+yubikey-ksm             yubikey-ksm/mysql/admin-user        string    root
+yubikey-ksm             yubikey-ksm/mysql/method            select    unix socket
+yubikey-val             yubikey-val/db/dbname               string    ykval
+yubikey-val             yubikey-val/db/app-user             string    ykval_verifier
+yubikey-val             yubikey-val/mysql/admin-pass        password  unsecured
+yubikey-val             yubikey-val/mysql/app-pass          password  unsecured
+yubikey-val             yubikey-val/mysql/method            select    unix socket
+yubikey-val             yubikey-val/database-type           select    mysql
+yubikey-val             yubikey-val/mysql/admin-user        string    root
