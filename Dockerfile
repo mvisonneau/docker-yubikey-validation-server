@@ -32,9 +32,11 @@ RUN gpg --no-tty --trust-model always -a -s --encrypt -r `gpg --no-tty --list-ke
 RUN /etc/init.d/mysql start && ykksm-import --database 'DBI:mysql:dbname=ykksm;host=127.0.0.1' --db-user ykksmreader --db-passwd unsecured < /root/encrypted_keys.txt
 RUN /etc/init.d/mysql start && \
 	echo "######### KEYS ###########" && \
-	cat /root/keys.txt && rm -f /root/keys.txt && \
+	for i in `grep -v ^# /root/keys.txt`; do echo "-- Key #`echo $i | cut -d',' -f1`:"; echo "| Public ID:  `echo $i | cut -d',' -f2`"; echo "| Private ID: `echo $i | cut -d',' -f3`";  echo "| Secret Key: `echo $i | cut -d',' -f4`"; done; \
+	rm -f /root/keys.txt && \
 	echo "######## CLIENT ##########" && \
-	ykval-export-clients
+	echo "ID:  `ykval-export-clients | cut -d',' -f1`" && \
+	echo "KEY: `ykval-export-clients | cut -d',' -f4`"
 
 # Expose and Startup
 EXPOSE 80
