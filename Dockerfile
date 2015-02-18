@@ -4,8 +4,8 @@
 # VERSION 0.1
 # 
 # Prereq :  rng-tools - rngd -r /dev/urandom
-# BUILD : 	docker build -t <username>/yubiserver
-# RUN :		docker run -d -p 8000:80 <yourname>/yubiserver
+# BUILD : 	docker build -t <username>/yubiserver .
+# RUN :		docker run -d -p 8000:80 <yourname>/yubiserver -name yubikey-server
 # 	
 
 FROM ubuntu:14.04
@@ -32,11 +32,13 @@ RUN gpg --no-tty --trust-model always -a -s --encrypt -r `gpg --no-tty --list-ke
 RUN /etc/init.d/mysql start && ykksm-import --database 'DBI:mysql:dbname=ykksm;host=127.0.0.1' --db-user ykksmreader --db-passwd unsecured < /root/encrypted_keys.txt
 RUN /etc/init.d/mysql start && \
 	echo "######### KEYS ###########" && \
-	for i in `grep -v ^# /root/keys.txt`; do echo "-- Key #`echo $i | cut -d',' -f1`:"; echo "| Public ID:  `echo $i | cut -d',' -f2`"; echo "| Private ID: `echo $i | cut -d',' -f3`";  echo "| Secret Key: `echo $i | cut -d',' -f4`"; done; \
+	echo "---" && \
+	for i in `grep -v ^# /root/keys.txt`; do echo "key`echo $i | cut -d',' -f1`:"; echo "  public_id: `echo $i | cut -d',' -f2`"; echo "  private_id: `echo $i | cut -d',' -f3`";  echo "  secret_key: `echo $i | cut -d',' -f4`"; done; \
 	rm -f /root/keys.txt && \
 	echo "######## CLIENT ##########" && \
-	echo "ID:  `ykval-export-clients | cut -d',' -f1`" && \
-	echo "KEY: `ykval-export-clients | cut -d',' -f4`"
+	echo "---\nclient:" && \
+	echo "  id:  `ykval-export-clients | cut -d',' -f1`" && \
+	echo "  key: `ykval-export-clients | cut -d',' -f4`"
 
 # Expose and Startup
 EXPOSE 80
