@@ -3,9 +3,9 @@
 #
 # VERSION 0.1
 # 
-# Prereq :  rng-tools - rngd -r /dev/urandom
-# BUILD : 	docker build -t <username>/yubiserver .
-# RUN :		docker run -d -p 8000:80 <yourname>/yubiserver -name yubikey-server
+# Prereq :  apt-get install rng-tools && rngd -r /dev/urandom
+# BUILD : 	docker build -t <username>/yubikey-server .
+# RUN :		docker run --name yubikey-server -d -p 8000:80 <yourname>/yubikey-server
 # 	
 
 FROM ubuntu:14.04
