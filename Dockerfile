@@ -8,12 +8,12 @@
 # RUN :		docker run --name yubikey-server -d -p 8000:80 <yourname>/yubikey-server:0.1
 # 	
 
+FROM ubuntu:14.04
+MAINTAINER Maxime VISONNEAU <maxime.visonneau@gmail.com>
+
 ## Custom variables
 ENV KEYS_AMOUNT = 10			# Total of keys that will be generated = Amount of Yubikey you want to manage with this KSM
 ENV DB_PASSWORD = unsecured		# Database password
-
-FROM ubuntu:14.04
-MAINTAINER Maxime VISONNEAU <maxime.visonneau@gmail.com>
 
 # Installation & Configuration
 
@@ -33,7 +33,7 @@ RUN gpg --no-tty --batch --trust-model always --gen-key /root/gpg.conf
 RUN gpg --no-tty --import default.sec
 RUN ykksm-gen-keys --urandom 1 $KEYS_AMOUNT > /root/keys.txt
 RUN gpg --no-tty --trust-model always -a -s --encrypt -r `gpg --no-tty --list-keys | head -n 3 | tail -1 | awk '{print $2}' | cut -d '/' -f2` < /root/keys.txt > /root/encrypted_keys.txt
-RUN /etc/init.d/mysql start && ykksm-import --database 'DBI:mysql:dbname=ykksm;host=127.0.0.1' --db-user ykksmreader --db-passwd $DB_PASSWORD < /root/encrypted_keys.txt
+RUN /etc/init.d/mysql start && ykksm-import < /root/encrypted_keys.txt
 RUN /etc/init.d/mysql start && \
 	echo "######### KEYS ###########" && \
 	echo "---" && \
@@ -46,4 +46,4 @@ RUN /etc/init.d/mysql start && \
 
 # Expose and Startup
 EXPOSE 80
-CMD ["/usr/bin/supervisord"]
+ENTRYPOINT ["/usr/bin/supervisord"]
